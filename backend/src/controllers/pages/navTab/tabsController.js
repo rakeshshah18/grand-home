@@ -38,9 +38,6 @@ const createTabItem = async (req, res) => {
     }
 };
 
-/**
- * Get all nav tabs (pages)
- */
 const getAllTabItems = async (req, res) => {
     console.log('[DEBUG] getAllTabItems called');
     try {
@@ -60,9 +57,6 @@ const getAllTabItems = async (req, res) => {
     }
 };
 
-/**
- * Get a single nav tab (page) by ID
- */
 const getTabItemById = async (req, res) => {
     console.log('[DEBUG] getTabItemById called with id:', req.params.id);
     try {
@@ -82,7 +76,6 @@ const getTabItemById = async (req, res) => {
             data: page
         });
     } catch (error) {
-        // Handle invalid ObjectId error
         if (error.kind === "ObjectId") {
             return res.status(400).json({
                 success: false,
@@ -98,16 +91,12 @@ const getTabItemById = async (req, res) => {
     }
 };
 
-/**
- * Update a nav tab (page) by ID
- */
 const updateTabItem = async (req, res) => {
     console.log('[DEBUG] updateTabItem called with id:', req.params.id);
     try {
         const { id } = req.params;
         const { name } = req.body;
 
-        // Validate input
         if (!name) {
             return res.status(400).json({
                 success: false,
@@ -134,7 +123,6 @@ const updateTabItem = async (req, res) => {
             data: page
         });
     } catch (error) {
-        // Handle duplicate key error
         if (error.code === 11000) {
             return res.status(400).json({
                 success: false,
@@ -142,7 +130,6 @@ const updateTabItem = async (req, res) => {
             });
         }
 
-        // Handle validation errors
         if (error.name === "ValidationError") {
             return res.status(400).json({
                 success: false,
@@ -150,7 +137,6 @@ const updateTabItem = async (req, res) => {
             });
         }
 
-        // Handle invalid ObjectId error
         if (error.kind === "ObjectId") {
             return res.status(400).json({
                 success: false,
@@ -166,9 +152,6 @@ const updateTabItem = async (req, res) => {
     }
 };
 
-/**
- * Delete a nav tab (page) by ID
- */
 const deleteTabItem = async (req, res) => {
     console.log('[DEBUG] deleteTabItem called with id:', req.params.id);
     try {
@@ -189,7 +172,6 @@ const deleteTabItem = async (req, res) => {
             data: page
         });
     } catch (error) {
-        // Handle invalid ObjectId error
         if (error.kind === "ObjectId") {
             return res.status(400).json({
                 success: false,
