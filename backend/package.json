@@ -1,0 +1,33 @@
+{
+  "name": "grand-home-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Backend for grand home ",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rakeshshah18/grand-home.git"
+  },
+  "keywords": [
+    "grand",
+    "home"
+  ],
+  "author": "Rakesh Shah",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rakeshshah18/grand-home/issues"
+  },
+  "homepage": "https://github.com/rakeshshah18/grand-home#readme",
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "mongoose": "^9.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}

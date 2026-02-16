@@ -1,0 +1,57 @@
+body {
+  margin: 0;
+  /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; */
+
+}
+
+.logo-contant{
+  font-size: 13px;
+  margin: 0;
+  padding: 0;
+  font-weight: 600;
+  color: #080808;
+}
+
+.StripeElement.StripeElement {
+  width: 100% !important;
+  padding: 14px 8px;
+  background: #F6F6F6;
+  /* height: 55px; */
+  border-radius: 15px;
+  margin-bottom: 25px;
+  border: 1px solid transparent;
+}
+.StripeElement.StripeElement:focus {
+  border: 1px solid var(--color-primary);
+}
+
+.text-error {
+  color: #ff4d4f; /* Bright red color for error */
+  font-size: 0.875rem; /* Equivalent to text-sm (14px) */
+  margin-bottom: 1rem; /* Equivalent to mb-4 (16px) */
+  font-weight: 500; /* Slightly bold for better readability */
+  background-color: #fff2f2; /* Light red background to highlight */
+  padding: 0.5rem 1rem; /* Add spacing inside the box */
+  border: 1px solid #ffcccc; /* Red border to enhance visibility */
+  border-radius: 4px; /* Smooth rounded corners */
+  box-shadow: 0 2px 4px rgba(255, 77, 79, 0.2); /* Subtle shadow for depth */
+}
+
+.text-error strong {
+  font-weight: bold; /* For emphasizing important parts of the message */
+}
+input.InputElement.is-empty.Input.Input {
+  display: none !important;
+}
+input.InputElement.is-empty.Input.Input--empty{
+  display: none !important;
+}
+
+/* code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+} */
