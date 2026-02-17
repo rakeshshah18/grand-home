@@ -11802,10 +11802,13 @@ h5,
   -webkit-transition: all 0.3s;
   -o-transition: all 0.3s;
   transition: all 0.3s;
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
   height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
+  z-index: 999;
 }
 
 #sidebar .h6 {
