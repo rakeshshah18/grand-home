@@ -51,6 +51,7 @@ const Sidebar = () => {
     const [navTabs, setNavTabs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isCollapsed, setIsCollapsed] = useState(false);
 
     useEffect(() => {
         const fetchNavTabs = async () => {
@@ -85,11 +86,20 @@ const Sidebar = () => {
         fetchNavTabs();
     }, []);
 
+    const handleToggleSidebar = () => {
+        setIsCollapsed(!isCollapsed);
+    };
+
     return (
         <div>
-            <nav id="sidebar">
+            <nav id="sidebar" className={isCollapsed ? 'active' : ''}>
                 <div className="custom-menu">
-                    <button type="button" id="sidebarCollapse" className="btn btn-primary">
+                    <button
+                        type="button"
+                        id="sidebarCollapse"
+                        className="btn btn-primary"
+                        onClick={handleToggleSidebar}
+                    >
                         <i className="fa fa-bars"></i>
                         <span className="sr-only">Toggle Menu</span>
                     </button>
