@@ -12015,3 +12015,50 @@ a[data-toggle="collapse"] {
 .subscribe-form .form-control {
   background: #3b4ec6;
 }
+
+/* Custom Dropdown Navigation Styles */
+.sub-menu {
+  margin: 0;
+  padding: 0;
+}
+
+.sub-menu li {
+  list-style: none;
+}
+
+.dropdown-toggle-icon {
+  float: right;
+  margin-right: 10px;
+  transition: transform 0.3s ease;
+}
+
+.dropdown-toggle-icon.expanded {
+  transform: rotate(0deg);
+}
+
+#sidebar .components li a.has-children {
+  position: relative;
+  cursor: pointer;
+}
+
+#sidebar .components li a.has-children:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Smooth transition for nested items */
+.sub-menu {
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+}
+
+/* Nested list styling */
+#sidebar .sub-menu li a {
+  font-size: 0.9em;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+#sidebar .sub-menu li a:hover {
+  background: rgba(255, 255, 255, 0.08);
+}

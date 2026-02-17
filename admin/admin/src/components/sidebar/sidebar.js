@@ -1,7 +1,90 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './style.css';
 
+// Recursive component to render navigation items with children
+const NavItem = ({ item, level = 0, isFirst = false }) => {
+    const [isExpanded, setIsExpanded] = useState(false);
+    const hasChildren = item.children && item.children.length > 0;
+
+    const handleToggle = (e) => {
+        if (hasChildren) {
+            e.preventDefault();
+            setIsExpanded(!isExpanded);
+        }
+    };
+
+    return (
+        <>
+            <li className={isFirst ? 'active' : ''}>
+                <a
+                    href={item.url || '#'}
+                    onClick={handleToggle}
+                    style={{ paddingLeft: `${level * 20 + 15}px` }}
+                    className={hasChildren ? 'has-children' : ''}
+                >
+                    <span className="mr-1"></span>
+                    {item.name}
+                    {hasChildren && (
+                        <span className={`dropdown-toggle-icon ${isExpanded ? 'expanded' : ''}`}>
+                            <i className={`fa fa-chevron-${isExpanded ? 'down' : 'right'}`}></i>
+                        </span>
+                    )}
+                </a>
+            </li>
+            {hasChildren && isExpanded && (
+                <ul className="list-unstyled sub-menu">
+                    {item.children.map((child, index) => (
+                        <NavItem
+                            key={child._id || index}
+                            item={child}
+                            level={level + 1}
+                            isFirst={false}
+                        />
+                    ))}
+                </ul>
+            )}
+        </>
+    );
+};
+
 const Sidebar = () => {
+    const [navTabs, setNavTabs] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchNavTabs = async () => {
+            try {
+                const baseUrl = process.env.REACT_APP_BASE_URL || 'http://localhost:8000';
+                const url = `${baseUrl}/api/navtab/`;
+                console.log('Fetching from:', url);
+
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch navigation tabs: ${response.status} ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                console.log('API Response:', result);
+
+                // Extract the data array from the nested response
+                if (result.success && result.data) {
+                    setNavTabs(result.data);
+                } else {
+                    setNavTabs([]);
+                }
+                setLoading(false);
+            } catch (err) {
+                console.error('Error fetching nav tabs:', err);
+                setError(err.message);
+                setLoading(false);
+            }
+        };
+
+        fetchNavTabs();
+    }, []);
+
     return (
         <div>
             <nav id="sidebar">
@@ -14,33 +97,25 @@ const Sidebar = () => {
                 <div className="p-4">
                     <h1>
                         <a href="/" className="logo"
-                        >Portfolic <span>Portfolio Agency</span></a
+                        >Dashboard <span>Admin</span></a
                         >
                     </h1>
                     <ul className="list-unstyled components mb-5">
-                        <li className="active">
-                            <a href="/home"><span className="fa fa-home mr-3"></span> Home</a>
-                        </li>
-                        <li>
-                            <a href="/about"><span className="fa fa-user mr-3"></span> About</a>
-                        </li>
-                        <li>
-                            <a href="/works"><span className="fa fa-briefcase mr-3"></span> Works</a>
-                        </li>
-                        <li>
-                            <a href="/blog"><span className="fa fa-sticky-note mr-3"></span> Blog</a>
-                        </li>
-                        <li>
-                            <a href="/gallery"><span className="fa fa-suitcase mr-3"></span> Gallery</a>
-                        </li>
-                        <li>
-                            <a href="/services"><span className="fa fa-cogs mr-3"></span> Services</a>
-                        </li>
-                        <li>
-                            <a href="/contact"
-                            ><span className="fa fa-paper-plane mr-3"></span> Contacts</a
-                            >
-                        </li>
+                        {loading ? (
+                            <li>Loading...</li>
+                        ) : error ? (
+                            <li>Error: {error}</li>
+                        ) : (
+                            navTabs.map((tab, index) => (
+                                <NavItem
+                                    key={tab._id || index}
+                                    item={tab}
+                                    level={0}
+                                    isFirst={index === 0}
+                                />
+                            ))
+                        )}
+
                     </ul>
 
                     <div className="mb-5">

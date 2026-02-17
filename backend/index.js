@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import express from "express";
+import cors from "cors";
 import connectDB from "./config/db.js";
 import config from "./config/config.js";
 import routes from "./src/routes/index.js";
@@ -8,6 +9,7 @@ dotenv.config();
 const app = express();
 
 // Middleware
+app.use(cors()); // Enable CORS for all origins
 app.use(express.json());
 
 connectDB();
