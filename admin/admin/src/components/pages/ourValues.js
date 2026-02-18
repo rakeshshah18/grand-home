@@ -206,7 +206,7 @@ const OurValues = () => {
 
             {showModal && (
                 <div className="modal show d-block" tabIndex="-1" style={{ background: 'rgba(0,0,0,.5)' }}>
-                    <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                    <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable" style={{ maxWidth: '60%' }}>
                         <div className="modal-content">
                             <div className="modal-header bg-primary text-white">
                                 <h5 className="modal-title">

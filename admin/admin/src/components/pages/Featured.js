@@ -216,7 +216,7 @@ const Featured = () => {
 
             {showModal && (
                 <div className="modal show d-block" style={{ background: 'rgba(0,0,0,.5)' }}>
-                    <div className="modal-dialog modal-lg modal-dialog-scrollable shadow">
+                    <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable shadow" style={{ maxWidth: '60%' }}>
                         <div className="modal-content border-0">
                             <div className="modal-header bg-primary text-white">
                                 <h5 className="modal-title"><i className="fa fa-pencil"></i>{editingId ? ' Edit Section' : 'Add Section'}</h5>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Featured from './Featured';
 import OurValues from './ourValues';
+import OurProject from './ourProject';
 
 const Home = () => {
     const [activeTab, setActiveTab] = useState('hero');
@@ -304,15 +305,7 @@ const Home = () => {
 
                     {/* Our Projects Tab */}
                     {activeTab === 'projects' && (
-                        <div className="tab-pane fade show active">
-                            <div className="card shadow-sm">
-                                <div className="card-body p-5 text-center">
-                                    <i className="fa fa-briefcase fa-3x text-muted mb-3"></i>
-                                    <h4 className="card-title mb-3">Our Projects Section</h4>
-                                    <p className="text-muted mb-0">Content management for projects will be available here.</p>
-                                </div>
-                            </div>
-                        </div>
+                        <OurProject />
                     )}
                 </div>
             </div>

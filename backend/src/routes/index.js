@@ -3,6 +3,7 @@ import navTabRoutes from "./pages/navTab/index.js";
 import heroRoutes from "./pages/homePage/heroRoutes.js";
 import featuresRoute from "./pages/homePage/featuresRoute.js";
 import ourValuesRoutes from "./pages/homePage/ourValuesRoutes.js";
+import ourProjectRoutes from "./pages/homePage/ourProjectRoutes.js";
 
 console.log('[DEBUG] src/routes/index.js loaded');
 
@@ -19,5 +20,9 @@ router.use("/features", featuresRoute);
 
 // Our values routes
 router.use("/ourValues", ourValuesRoutes);
+
+// Our projects routes
+router.use("/ourProjects", ourProjectRoutes);
+
 
 export default router;
