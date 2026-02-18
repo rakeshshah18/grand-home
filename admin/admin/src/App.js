@@ -1,6 +1,7 @@
 import './App.css';
 import Sidebar from './components/sidebar/sidebar';
 import Home from './components/pages/Home';
+import Dashboard from './components/dashboard/dashboard';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState } from 'react';
 
@@ -18,7 +19,7 @@ function App() {
         <div className={`main-content ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
           <Routes>
             <Route path="/home" element={<Home />} />
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Dashboard />} />
           </Routes>
         </div>
       </div>
