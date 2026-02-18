@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Featured from './Featured';
 import OurValues from './ourValues';
 import OurProject from './ourProject';
+import About from './about';
 
 const Home = () => {
     const [activeTab, setActiveTab] = useState('hero');
@@ -197,6 +198,15 @@ const Home = () => {
                     </li>
                     <li className="nav-item" role="presentation">
                         <button
+                            className={`nav-link ${activeTab === 'about' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('about')}
+                            type="button"
+                        >
+                            <i className="fa fa-user me-2"></i> About
+                        </button>
+                    </li>
+                    <li className="nav-item" role="presentation">
+                        <button
                             className={`nav-link ${activeTab === 'featured' ? 'active' : ''}`}
                             onClick={() => setActiveTab('featured')}
                             type="button"
@@ -291,6 +301,11 @@ const Home = () => {
                                 </div>
                             )}
                         </div>
+                    )}
+
+                    {/* About Tab */}
+                    {activeTab === 'about' && (
+                        <About />
                     )}
 
                     {/* Featured Tab */}

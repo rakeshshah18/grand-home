@@ -141,7 +141,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     </ul>
 
 
-                    <div className="footer" style={{ position: "absolute", bottom: "0", left: "0", right: "0", textAlign: "center" }}>
+                    <div className="footer" style={{ position: "absolute", bottom: "12px", left: "0", right: "0", textAlign: "center" }}>
                         <p>
                             Copyright &copy;
                             <script>
