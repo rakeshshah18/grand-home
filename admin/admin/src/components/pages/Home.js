@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Featured from './Featured';
+import OurValues from './ourValues';
 
 const Home = () => {
     const [activeTab, setActiveTab] = useState('hero');
@@ -179,7 +180,7 @@ const Home = () => {
 
     return (
         <div className="container-fluid py-4 bg-light min-vh-100">
-            <div className="container" style={{ maxWidth: '1200px' }}>
+            <div className="container px-3 px-md-4" style={{ maxWidth: '1200px' }}>
                 <h1 className="mb-4 fw-bold">Home Page Management</h1>
 
                 {/* Bootstrap Tabs Navigation */}
@@ -298,15 +299,7 @@ const Home = () => {
 
                     {/* Our Values Tab */}
                     {activeTab === 'values' && (
-                        <div className="tab-pane fade show active">
-                            <div className="card shadow-sm">
-                                <div className="card-body p-5 text-center">
-                                    <i className="fa fa-heart fa-3x text-muted mb-3"></i>
-                                    <h4 className="card-title mb-3">Our Values Section</h4>
-                                    <p className="text-muted mb-0">Content management for company values will be available here.</p>
-                                </div>
-                            </div>
-                        </div>
+                        <OurValues />
                     )}
 
                     {/* Our Projects Tab */}
@@ -327,7 +320,7 @@ const Home = () => {
             {/* Edit Hero Modal */}
             {showModal && (
                 <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-                    <div className="modal-dialog modal-lg modal-dialog-centered">
+                    <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title">

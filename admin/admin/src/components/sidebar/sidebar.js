@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './style.css';
+import './responsive.css';
 
 // Recursive component to render navigation items with children
 const NavItem = ({ item, level = 0, isFirst = false }) => {
@@ -47,11 +48,10 @@ const NavItem = ({ item, level = 0, isFirst = false }) => {
     );
 };
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, toggleSidebar }) => {
     const [navTabs, setNavTabs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [isCollapsed, setIsCollapsed] = useState(false);
 
     useEffect(() => {
         const fetchNavTabs = async () => {
@@ -86,31 +86,44 @@ const Sidebar = () => {
         fetchNavTabs();
     }, []);
 
-    const handleToggleSidebar = () => {
-        setIsCollapsed(!isCollapsed);
-    };
-
     return (
-        <div>
-            <nav id="sidebar" className={isCollapsed ? 'active' : ''}>
-                <div className="custom-menu">
-                    <button
-                        type="button"
-                        id="sidebarCollapse"
-                        className="btn btn-primary"
-                        onClick={handleToggleSidebar}
-                    >
-                        <i className="fa fa-bars"></i>
-                        <span className="sr-only">Toggle Menu</span>
-                    </button>
-                </div>
+        <>
+            {/* Hamburger button for mobile */}
+            <button
+                className="hamburger-btn"
+                onClick={toggleSidebar}
+                aria-label="Toggle Sidebar"
+            >
+                <i className="fa fa-bars"></i>
+            </button>
+
+            {/* Desktop toggle button - outside sidebar */}
+            <button
+                type="button"
+                className={`desktop-toggle-btn ${isOpen ? 'sidebar-is-open' : 'sidebar-is-closed'}`}
+                onClick={toggleSidebar}
+                aria-label="Toggle Sidebar"
+            >
+                <i className="fa fa-bars"></i>
+            </button>
+
+            {/* Overlay for mobile */}
+            {isOpen && (
+                <div
+                    className="sidebar-overlay"
+                    onClick={toggleSidebar}
+                ></div>
+            )}
+
+            {/* Sidebar */}
+            <nav id="sidebar" className={isOpen ? 'sidebar-open' : 'sidebar-closed'}>
                 <div className="p-4">
                     <h1>
-                        <a href="/" className="logo"
-                        >Dashboard <span>Admin</span></a
-                        >
+                        <a href="/" className="logo">
+                            Dashboard <span>Admin</span>
+                        </a>
                     </h1>
-                    <ul className="list-unstyled components mb-5">
+                    <ul className="list-unstyled components mb-5 text-white">
                         {loading ? (
                             <li>Loading...</li>
                         ) : error ? (
@@ -125,22 +138,8 @@ const Sidebar = () => {
                                 />
                             ))
                         )}
-
                     </ul>
 
-                    <div className="mb-5">
-                        <h3 className="h6 mb-3">Subscribe for newsletter</h3>
-                        <form action="#" className="subscribe-form">
-                            <div className="form-group d-flex">
-                                <div className="icon"><span className="icon-paper-plane"></span></div>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Enter Email Address"
-                                />
-                            </div>
-                        </form>
-                    </div>
 
                     <div className="footer">
                         <p>
@@ -153,8 +152,8 @@ const Sidebar = () => {
                     </div>
                 </div>
             </nav>
-        </div>
+        </>
     );
 };
 
-export default Sidebar; 
+export default Sidebar;

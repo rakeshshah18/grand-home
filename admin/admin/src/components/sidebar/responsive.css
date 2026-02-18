@@ -1,0 +1,243 @@
+/* Hamburger button for mobile */
+.hamburger-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1050;
+    background: #12197c;
+    border: none;
+    color: #ffffff;
+    width: 45px;
+    height: 45px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.hamburger-btn:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}
+
+.hamburger-btn i {
+    font-size: 18px;
+}
+
+/* Sidebar overlay for mobile */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+    display: none;
+}
+
+/* Sidebar base styles */
+#sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 270px;
+    background: #12197c;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: transform 0.3s ease-in-out;
+    z-index: 1045;
+}
+
+/* Desktop toggle button - always visible outside sidebar */
+.desktop-toggle-btn {
+    position: fixed;
+    top: 20px;
+    left: 280px;
+    z-index: 1050;
+    background: #007bff;
+    border: none;
+    color: white;
+    width: 45px;
+    height: 45px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: left 0.3s ease-in-out, background 0.3s;
+}
+
+.desktop-toggle-btn:hover {
+    background: #0056b3;
+}
+
+.desktop-toggle-btn i {
+    font-size: 18px;
+}
+
+/* Move toggle button when sidebar is closed */
+.desktop-toggle-btn.sidebar-is-closed {
+    left: 20px;
+}
+
+/* Desktop (≥ 992px) */
+@media (min-width: 992px) {
+    .hamburger-btn {
+        display: none !important;
+    }
+
+    .desktop-toggle-btn {
+        display: flex !important;
+    }
+
+    .sidebar-overlay {
+        display: none !important;
+    }
+
+    #sidebar.sidebar-closed {
+        transform: translateX(-270px);
+    }
+
+    #sidebar.sidebar-open {
+        transform: translateX(0);
+    }
+
+    /* Move toggle button when sidebar is closed */
+    #sidebar.sidebar-closed~.main-content .custom-menu,
+    #sidebar.sidebar-closed .custom-menu {
+        left: 20px;
+    }
+}
+
+/* Tablet and Mobile (< 992px) */
+@media (max-width: 991px) {
+    .hamburger-btn {
+        display: flex !important;
+    }
+
+    .desktop-toggle-btn {
+        display: none !important;
+    }
+
+    .sidebar-overlay {
+        display: block;
+    }
+
+    #sidebar {
+        transform: translateX(-100%);
+    }
+
+    #sidebar.sidebar-open {
+        transform: translateX(0);
+    }
+
+    #sidebar.sidebar-closed {
+        transform: translateX(-100%);
+    }
+}
+
+/* Medium devices (576px – 991px): sidebar opens at 50% width */
+@media (min-width: 576px) and (max-width: 991px) {
+    #sidebar {
+        width: 50vw;
+    }
+}
+
+/* Small devices (< 576px): sidebar opens full screen */
+@media (max-width: 575px) {
+    #sidebar {
+        width: 100vw !important;
+        max-width: none !important;
+    }
+
+    .hamburger-btn {
+        top: 15px;
+        left: 15px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .hamburger-btn i {
+        font-size: 16px;
+    }
+}
+
+/* Additional sidebar styles */
+#sidebar .logo {
+    text-decoration: none;
+    color: #333;
+    font-weight: 700;
+}
+
+#sidebar .logo span {
+    font-weight: 400;
+    color: #007bff;
+}
+
+#sidebar ul.components {
+    padding: 0;
+}
+
+#sidebar ul li {
+    list-style: none;
+}
+
+#sidebar ul li a {
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    color: #d4d0d0;
+    text-decoration: none;
+    transition: all 0.3s;
+    position: relative;
+}
+
+#sidebar ul li a:hover {
+    background: #f8f9fa;
+    color: #007bff;
+}
+
+#sidebar ul li.active>a {
+    background: #12197c;
+    color: white;
+}
+
+.dropdown-toggle-icon {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s;
+}
+
+.dropdown-toggle-icon.expanded {
+    transform: rotate(0deg);
+}
+
+.sub-menu {
+    padding-left: 0;
+}
+
+.sub-menu li a {
+    background: #f8f9fa;
+}
+
+
+
+.footer {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.footer p {
+    font-size: 0.85rem;
+    color: #999;
+    margin: 0;
+}
