@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 const OurProject = () => {
     const createEmptyCard = () => ({
-        image: '',
+        image: [],
+        thumbnail: '',
         status: 'under construction',
         type: 'single family',
         location: 'skyview',
@@ -10,7 +11,6 @@ const OurProject = () => {
     });
 
     const [formData, setFormData] = useState({
-        heading: '',
         cards: [createEmptyCard()]
     });
 
@@ -39,13 +39,13 @@ const OurProject = () => {
         }
     };
 
-    const handleInputChange = (e) => {
-        setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
-    };
-
     const handleCardChange = (index, field, value) => {
         const updatedCards = [...formData.cards];
-        updatedCards[index][field] = value;
+        if (field === 'image') {
+            updatedCards[index][field] = value.split(',').map(img => img.trim());
+        } else {
+            updatedCards[index][field] = value;
+        }
         setFormData(prev => ({ ...prev, cards: updatedCards }));
     };
 
@@ -76,10 +76,18 @@ const OurProject = () => {
 
             const method = editingId ? 'PUT' : 'POST';
 
+            const payload = {
+                ...formData,
+                cards: formData.cards.map(card => ({
+                    ...card,
+                    image: card.image.filter(img => img.trim() !== "")
+                }))
+            };
+
             const response = await fetch(url, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(payload)
             });
 
             const result = await response.json();
@@ -104,7 +112,6 @@ const OurProject = () => {
 
     const handleEdit = (item) => {
         setFormData({
-            heading: item.heading,
             cards: item.cards.map(card => ({ ...card }))
         });
         setEditingId(item._id);
@@ -134,57 +141,85 @@ const OurProject = () => {
     const handleClose = () => {
         setShowModal(false);
         setEditingId(null);
-        setFormData({ heading: '', cards: [createEmptyCard()] });
+        setFormData({ cards: [createEmptyCard()] });
     };
 
-    const inputStyle = { border: '1px solid #ced4da' };
+    const inputStyle = { border: '1px solid #ced4da', borderRadius: '4px' };
 
     return (
         <div className="container-fluid py-4">
             {message.text && (
-                <div className={`alert alert-${message.type} alert-dismissible fade show`} role="alert">
+                <div className={`alert alert-${message.type} alert-dismissible fade show shadow-sm`} role="alert">
                     {message.text}
-                    <button type="button" className="btn-close btn-close-white bg-green border-0" aria-label="Close" onClick={() => setMessage({ type: '', text: '' })}><i className="fa fa-check"></i></button>
+                    <button type="button" className="btn-close bg-transparent border-0" onClick={() => setMessage({ type: '', text: '' })}>
+                        <i className="fa fa-close"></i>
+                    </button>
                 </div>
             )}
 
-            <div className="card shadow-sm mb-4">
-                <div className="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                    <h5 className="mb-0 fw-bold">Our Projects Section</h5>
-                    <div className="d-flex gap-2">
-                        <button className="btn btn-primary btn-sm" onClick={() => setShowModal(true)}>
-                            <i className="fa fa-plus me-2"></i> Add Section
-                        </button>
-                    </div>
+            <div className="card shadow-sm border-0 mb-4" style={{ borderRadius: '15px' }}>
+                <div className="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
+                    <h5 className="mb-0 fw-bold text-dark">
+                        <i className="fa fa-th-large text-primary me-2"></i> Our Projects Management
+                    </h5>
+                    <button className="btn btn-primary px-4 shadow-sm" style={{ borderRadius: '10px' }} onClick={() => setShowModal(true)}>
+                        <i className="fa fa-plus-circle me-2"></i> Add New Section
+                    </button>
                 </div>
-                <div className="card-body">
+                <div className="card-body p-0">
                     {projects.length === 0 ? (
                         <div className="text-center py-5 text-muted">
-                            <i className="fa fa-briefcase fa-3x mb-3" style={{ opacity: 0.3 }}></i>
-                            <p>No projects section created yet.</p>
+                            <i className="fa fa-folder-open-o fa-3x mb-3 opacity-25"></i>
+                            <p>No project sections found.</p>
                         </div>
                     ) : (
                         <div className="table-responsive">
-                            <table className="table table-hover align-middle border">
-                                <thead className="table-light">
+                            <table className="table table-hover align-middle mb-0">
+                                <thead className="bg-light">
                                     <tr>
-                                        <th>Heading</th>
-                                        <th>Cards Count</th>
-                                        <th style={{ width: '200px' }}>Actions</th>
+                                        <th className="ps-4" style={{ width: '150px' }}>Project Previews</th>
+                                        <th>Detailed Statistics</th>
+                                        <th className="text-center">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {projects.map(item => (
                                         <tr key={item._id}>
-                                            <td className="fw-bold">{item.heading}</td>
-                                            <td>{item.cards.length} Projects</td>
+                                            <td className="ps-4">
+                                                <div className="d-flex align-items-center">
+                                                    {(item.cards?.[0]?.thumbnail || item.cards?.[0]?.image?.[0]) ? (
+                                                        <div className="position-relative">
+                                                            <img
+                                                                src={item.cards[0].thumbnail || item.cards[0].image[0]}
+                                                                alt="thumb"
+                                                                className="rounded shadow-sm border"
+                                                                style={{ width: '70px', height: '52px', objectFit: 'cover' }}
+                                                            />
+                                                            {item.cards.length > 1 && (
+                                                                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark border border-light" style={{ fontSize: '10px' }}>
+                                                                    +{item.cards.length - 1}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    ) : (
+                                                        <div className="bg-light rounded d-flex align-items-center justify-content-center border" style={{ width: '70px', height: '52px' }}>
+                                                            <i className="fa fa-image text-muted opacity-50"></i>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </td>
                                             <td>
-                                                <div className="d-flex gap-2">
-                                                    <button className="btn btn-sm btn-primary" onClick={() => handleEdit(item)}>
-                                                        <i className="fa fa-pencil me-1"></i> Edit
+                                                <div className="d-flex flex-column mt-2">
+                                                    <span className="fw-bold text-dark"><i className="fa fa-photo me-1"></i> {item.cards.reduce((acc, c) => acc + (c.image?.length || 0), 0)} Images</span>
+                                                </div>
+                                            </td>
+                                            <td className="">
+                                                <div className="d-flex justify-content-center mt-2">
+                                                    <button className="btn btn-sm btn-light border shadow-sm" onClick={() => handleEdit(item)} style={{ marginRight: '5px' }}>
+                                                        <i className="fa fa-pencil text-primary me-1"></i> Edit
                                                     </button>
-                                                    <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(item._id)}>
-                                                        <i className="fa fa-trash me-1"></i> Delete
+                                                    <button className="btn btn-sm btn-light border shadow-sm" onClick={() => handleDelete(item._id)}>
+                                                        <i className="fa fa-trash text-danger me-1"></i> Delete
                                                     </button>
                                                 </div>
                                             </td>
@@ -198,85 +233,101 @@ const OurProject = () => {
             </div>
 
             {showModal && (
-                <div className="modal show d-block" tabIndex="-1" style={{ background: 'rgba(0,0,0,.5)' }}>
-                    <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable" style={{ maxWidth: '60%' }}>
-                        <div className="modal-content">
-                            <div className="modal-header bg-primary text-white">
-                                <h5 className="modal-title">
-                                    <i className={`fa ${editingId ? 'fa-pencil' : 'fa-plus'} me-2`}></i>
-                                    {editingId ? ' Edit Projects Section' : ' Add Projects Section'}
+                <div className="modal show d-block" tabIndex="-1" style={{ background: 'rgba(0,0,0,.6)', backdropFilter: 'blur(4px)' }}>
+                    <div className="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                        <div className="modal-content border-0 shadow-lg" style={{ borderRadius: '20px' }}>
+                            <div className="modal-header bg-white border-bottom px-4 py-3">
+                                <h5 className="modal-title fw-bold">
+                                    <i className={`fa ${editingId ? 'fa-edit' : 'fa-plus-circle'} text-primary me-2`}></i>
+                                    {editingId ? ' Update Projects' : ' Add Project Section'}
                                 </h5>
-                                <button type="button" className="btn-close btn-close-white" onClick={handleClose}><i className="fa fa-times"></i></button>
+                                <button type="button" className="btn-close shadow-none border-0 bg-white" onClick={handleClose}><i className="fa fa-times"></i></button>
                             </div>
-                            <div className="modal-body p-4">
-                                <form onSubmit={handleSubmit}>
-                                    <div className="mb-4">
-                                        <label className="form-label fw-bold">Section Heading</label>
-                                        <input
-                                            type="text"
-                                            name="heading"
-                                            className="form-control"
-                                            style={inputStyle}
-                                            value={formData.heading}
-                                            onChange={handleInputChange}
-                                            required
-                                            placeholder="Enter section heading"
-                                        />
-                                    </div>
-
+                            <div className="modal-body p-4 bg-light">
+                                <form id="projectForm" onSubmit={handleSubmit}>
                                     <div className="d-flex justify-content-between align-items-center mb-3">
-                                        <h6 className="fw-bold mb-0">Project Cards</h6>
-                                        <button type="button" className="btn btn-sm btn-success" onClick={addCard}>
-                                            <i className="fa fa-plus me-1"></i> Add Project
+                                        <h6 className="fw-bold mb-0 text-dark">Project Details ({formData.cards.length})</h6>
+                                        <button type="button" className="btn btn-success btn-sm shadow-sm" style={{ borderRadius: '8px' }} onClick={addCard}>
+                                            <i className="fa fa-plus me-1"></i> Add Project Card
                                         </button>
                                     </div>
 
                                     {formData.cards.map((card, index) => (
-                                        <div key={index} className="card bg-light mb-3 position-relative shadow-sm">
-                                            <div className="card-body pt-4">
+                                        <div key={index} className="card border-0 shadow-sm mb-3" style={{ borderRadius: '15px', overflow: 'hidden' }}>
+                                            <div className="card-header bg-white d-flex justify-content-between align-items-center py-2 border-0">
+                                                <div className="d-flex align-items-center gap-2">
+                                                    <span className="badge bg-primary text-white">Project : {index + 1}</span>
+                                                    {(card.thumbnail || card.image?.[0]) && (
+                                                        <img
+                                                            src={card.thumbnail || card.image[0]}
+                                                            alt="mini-thumb"
+                                                            className="rounded border"
+                                                            style={{ width: '30px', height: '22px', objectFit: 'cover' }}
+                                                        />
+                                                    )}
+                                                </div>
                                                 {formData.cards.length > 1 && (
-                                                    <button
-                                                        type="button"
-                                                        className="btn btn-sm btn-outline-danger  m-2"
-                                                        onClick={() => removeCard(index)}
-                                                    >
-                                                        <i className="fa fa-trash"></i>
+                                                    <button type="button" className="btn btn-link text-danger p-0 shadow-none border-0" onClick={() => removeCard(index)}>
+                                                        <i className="fa fa-times-circle fs-5"></i>
                                                     </button>
                                                 )}
+                                            </div>
+                                            <div className="card-body pt-0 px-4 pb-4">
                                                 <div className="row g-3">
-                                                    <div className="col-md-12">
-                                                        <label className="form-label fw-semibold small">Image URL</label>
-                                                        <input
-                                                            type="text"
+                                                    <div className="col-md-6">
+                                                        <label className="form-label fw-bold small text-muted">Thumbnail Image URL</label>
+                                                        <div className="d-flex gap-2">
+                                                            <input
+                                                                type="text"
+                                                                className="form-control"
+                                                                style={inputStyle}
+                                                                value={card.thumbnail}
+                                                                onChange={(e) => handleCardChange(index, 'thumbnail', e.target.value)}
+                                                                placeholder="Project thumbnail URL"
+                                                            />
+                                                            {card.thumbnail && (
+                                                                <img src={card.thumbnail} alt="thumb-prev" className="rounded border shadow-sm" style={{ width: '45px', height: '38px', objectFit: 'cover' }} onError={(e) => { e.target.src = "https://via.placeholder.com/45x38?text=!" }} />
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-12">
+                                                        <label className="form-label fw-bold small text-muted">Gallery Image URLs (comma separated)</label>
+                                                        <textarea
                                                             className="form-control"
-                                                            style={inputStyle}
-                                                            value={card.image}
+                                                            style={{ ...inputStyle, minHeight: '20vh', resize: 'none' }}
+                                                            value={card.image.join(', ')}
                                                             onChange={(e) => handleCardChange(index, 'image', e.target.value)}
                                                             required
-                                                            placeholder="Project image URL"
+                                                            placeholder="https://img1.com, https://img2.com"
                                                         />
+                                                        <div className="mt-2 d-flex gap-2 flex-wrap overflow-auto p-2 bg-light rounded border-dashed" style={{ border: '2px dashed #ddd', minHeight: '20vh' }}>
+                                                            {card.image.length > 0 && card.image[0] !== "" ? (
+                                                                card.image.map((url, idx) => (
+                                                                    <div key={idx} className="position-relative">
+                                                                        <img
+                                                                            src={url.trim()}
+                                                                            alt="preview"
+                                                                            className="rounded"
+                                                                            style={{ width: '80px', height: '60px', objectFit: 'cover' }}
+                                                                            onError={(e) => { e.target.src = "https://via.placeholder.com/80x60?text=Error" }}
+                                                                        />
+                                                                    </div>
+                                                                ))
+                                                            ) : <span className="text-muted small p-2">No gallery images added</span>}
+                                                        </div>
                                                     </div>
+
                                                     <div className="col-md-3">
-                                                        <label className="form-label fw-semibold small">Status:</label>
-                                                        <select
-                                                            className="form-select"
-                                                            style={inputStyle}
-                                                            value={card.status}
-                                                            onChange={(e) => handleCardChange(index, 'status', e.target.value)}
-                                                        >
+                                                        <label className="form-label fw-bold small text-muted">Status</label>
+                                                        <select className="form-select" style={inputStyle} value={card.status} onChange={(e) => handleCardChange(index, 'status', e.target.value)}>
                                                             <option value="completed sold">Completed Sold</option>
                                                             <option value="under construction">Under Construction</option>
                                                             <option value="ready to move">Ready to Move</option>
                                                         </select>
                                                     </div>
                                                     <div className="col-md-3">
-                                                        <label className="form-label fw-semibold small">Type:</label>
-                                                        <select
-                                                            className="form-select"
-                                                            style={inputStyle}
-                                                            value={card.type}
-                                                            onChange={(e) => handleCardChange(index, 'type', e.target.value)}
-                                                        >
+                                                        <label className="form-label fw-bold small text-muted">Building Type</label>
+                                                        <select className="form-select" style={inputStyle} value={card.type} onChange={(e) => handleCardChange(index, 'type', e.target.value)}>
                                                             <option value="single family">Single Family</option>
                                                             <option value="multi family">Multi Family</option>
                                                             <option value="duplex homes">Duplex Homes</option>
@@ -285,13 +336,8 @@ const OurProject = () => {
                                                         </select>
                                                     </div>
                                                     <div className="col-md-3">
-                                                        <label className="form-label fw-semibold small">Location:</label>
-                                                        <select
-                                                            className="form-select"
-                                                            style={inputStyle}
-                                                            value={card.location}
-                                                            onChange={(e) => handleCardChange(index, 'location', e.target.value)}
-                                                        >
+                                                        <label className="form-label fw-bold small text-muted">Location</label>
+                                                        <select className="form-select" style={inputStyle} value={card.location} onChange={(e) => handleCardChange(index, 'location', e.target.value)}>
                                                             <option value="skyview">Skyview</option>
                                                             <option value="thorncliffe">Thorncliffe</option>
                                                             <option value="braeside">Braeside</option>
@@ -302,13 +348,8 @@ const OurProject = () => {
                                                         </select>
                                                     </div>
                                                     <div className="col-md-3">
-                                                        <label className="form-label fw-semibold small">Community:</label>
-                                                        <select
-                                                            className="form-select"
-                                                            style={inputStyle}
-                                                            value={card.community}
-                                                            onChange={(e) => handleCardChange(index, 'community', e.target.value)}
-                                                        >
+                                                        <label className="form-label fw-bold small text-muted">Community</label>
+                                                        <select className="form-select" style={inputStyle} value={card.community} onChange={(e) => handleCardChange(index, 'community', e.target.value)}>
                                                             <option value="calgary">Calgary</option>
                                                             <option value="chestermere">Chestermere</option>
                                                         </select>
@@ -317,18 +358,17 @@ const OurProject = () => {
                                             </div>
                                         </div>
                                     ))}
-
-                                    <div className="modal-footer border-0 p-0 mt-4">
-                                        <button type="button" className="btn btn-secondary" onClick={handleClose}>Cancel</button>
-                                        <button type="submit" className="btn btn-primary px-4" disabled={loading}>
-                                            {loading ? (
-                                                <><span className="spinner-border spinner-border-sm me-2"></span>Saving...</>
-                                            ) : (
-                                                <><i className="fa fa-save me-2"></i>{editingId ? ' Update Section' : ' Save Section'}</>
-                                            )}
-                                        </button>
-                                    </div>
                                 </form>
+                            </div>
+                            <div className="modal-footer bg-white border-top px-4 py-3" style={{ borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px' }}>
+                                <button type="button" className="btn btn-light px-4 border" onClick={handleClose}>Cancel</button>
+                                <button type="submit" form="projectForm" className="btn btn-primary px-5 fw-bold shadow-sm" disabled={loading}>
+                                    {loading ? (
+                                        <><span className="spinner-border spinner-border-sm me-2"></span>Processing...</>
+                                    ) : (
+                                        <><i className="fa fa-save me-2"></i>{editingId ? ' Update Section' : ' Save Section'}</>
+                                    )}
+                                </button>
                             </div>
                         </div>
                     </div>

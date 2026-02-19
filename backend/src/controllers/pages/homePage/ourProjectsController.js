@@ -4,10 +4,9 @@ import OurProject from "../../../models/pages/homePage/ourProject.js";
 /* ----------------------------- CREATE ----------------------------- */
 const createProject = async (req, res) => {
     try {
-        const { heading, cards } = req.body;
+        const { cards } = req.body;
 
         const project = await OurProject.create({
-            heading,
             cards
         });
 
@@ -89,10 +88,9 @@ const getProjectById = async (req, res) => {
 const updateProject = async (req, res) => {
     try {
         const { id } = req.params;
-        const { heading, cards } = req.body;
+        const { cards } = req.body;
 
         const updateData = {};
-        if (heading !== undefined) updateData.heading = heading;
         if (cards !== undefined) updateData.cards = cards;
 
         const project = await OurProject.findByIdAndUpdate(

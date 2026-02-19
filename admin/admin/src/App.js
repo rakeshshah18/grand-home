@@ -5,6 +5,7 @@ import Dashboard from './components/dashboard/dashboard';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState } from 'react';
 import About from './components/pages/about/about';
+import OurProject from './components/pages/home/ourProject';
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth >= 992);
@@ -22,6 +23,7 @@ function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/" element={<Dashboard />} />
             <Route path="/about-us" element={<About />} />
+            <Route path="/projects" element={<OurProject />} />
           </Routes>
         </div>
       </div>

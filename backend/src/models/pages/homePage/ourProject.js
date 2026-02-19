@@ -2,9 +2,20 @@ import mongoose from 'mongoose';
 
 const projectCardSchema = new mongoose.Schema({
     image: {
-        type: String,
+        type: [String],
         required: [true, 'Project image is required'],
-        trim: true
+        validate: {
+            validator: function (v) {
+                return v && v.length > 0;
+            },
+            message: 'At least one project image is required'
+        },
+        default: []
+    },
+    thumbnail: {
+        type: String,
+        trim: true,
+        default: ''
     },
     status: {
         type: String,
@@ -43,17 +54,9 @@ const projectCardSchema = new mongoose.Schema({
 }, { _id: true });
 
 const ourProjectSchema = new mongoose.Schema({
-    heading: {
-        type: String,
-        required: [true, 'Heading is required'],
-        trim: true
-    },
     cards: {
         type: [projectCardSchema],
-        validate: {
-            validator: v => v.length > 0,
-            message: 'At least one project card is required'
-        }
+        default: []
     }
 }, { timestamps: true });
 
