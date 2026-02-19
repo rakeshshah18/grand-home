@@ -1,9 +1,10 @@
 import './App.css';
 import Sidebar from './components/sidebar/sidebar';
-import Home from './components/pages/Home';
+import Home from './components/pages/home/Home';
 import Dashboard from './components/dashboard/dashboard';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState } from 'react';
+import About from './components/pages/about/about';
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth >= 992);
@@ -20,6 +21,7 @@ function App() {
           <Routes>
             <Route path="/home" element={<Home />} />
             <Route path="/" element={<Dashboard />} />
+            <Route path="/about-us" element={<About />} />
           </Routes>
         </div>
       </div>

@@ -5,6 +5,8 @@ import featuresRoute from "./pages/homePage/featuresRoute.js";
 import ourValuesRoutes from "./pages/homePage/ourValuesRoutes.js";
 import ourProjectRoutes from "./pages/homePage/ourProjectRoutes.js";
 import aboutRoute from "./pages/homePage/aboutRoute.js";
+import aboutPageRoutes from "./pages/aboutPage/about.js";
+import pointsCallRoutes from "./pages/aboutPage/pointsCall.js";
 
 console.log('[DEBUG] src/routes/index.js loaded');
 
@@ -27,6 +29,12 @@ router.use("/ourProjects", ourProjectRoutes);
 
 // About routes
 router.use("/about", aboutRoute);
+
+// About page routes
+router.use("/aboutPage", aboutPageRoutes);
+
+// Points call routes
+router.use("/pointsCall", pointsCallRoutes);
 
 
 export default router;
