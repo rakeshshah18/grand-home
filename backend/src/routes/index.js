@@ -9,6 +9,7 @@ import aboutPageRoutes from "./pages/aboutPage/about.js";
 import pointsCallRoutes from "./pages/aboutPage/pointsCall.js";
 import blogRoutes from "./pages/blogs/blogRoutes.js";
 import getInTouchRoutes from "./pages/contact/getInTouchRoutes.js";
+import scheduleVisitRoutes from "./pages/contact/scheduleVisitRoutes.js";
 
 console.log('[DEBUG] src/routes/index.js loaded');
 
@@ -43,6 +44,7 @@ router.use("/blogs", blogRoutes);
 
 // Contact routes
 router.use("/getInTouch", getInTouchRoutes);
+router.use("/scheduleVisit", scheduleVisitRoutes);
 
 
 export default router;

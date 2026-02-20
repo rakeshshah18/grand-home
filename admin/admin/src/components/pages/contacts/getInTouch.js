@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ScheduledVisit from './scheduledVisit';
 
 const GetInTouch = () => {
     const [heading, setHeading] = useState('');
@@ -284,11 +285,7 @@ const GetInTouch = () => {
                     )}
 
                     {activeTab === 'scheduleVisit' && (
-                        <div className="text-center py-5">
-                            <i className="fa fa-calendar-times-o display-1 text-muted opacity-25 mb-3"></i>
-                            <h4 className="text-muted">Schedule Visit Configuration</h4>
-                            <p className="lead text-muted small">This section is currently under development.</p>
-                        </div>
+                        <ScheduledVisit />
                     )}
                 </div>
             </div>
