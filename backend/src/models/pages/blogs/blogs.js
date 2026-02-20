@@ -31,7 +31,6 @@ const blogSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // Auto-generate slug from title if not provided or before saving
-// Auto-generate slug from title if not provided or before saving
 blogSchema.pre('validate', function () {
     if (this.title && !this.slug) {
         this.slug = this.title

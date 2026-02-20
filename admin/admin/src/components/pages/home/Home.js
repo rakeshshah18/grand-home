@@ -183,7 +183,9 @@ const Home = () => {
     return (
         <div className="container-fluid py-4 bg-light min-vh-100">
             <div className="container px-3 px-md-4" style={{ maxWidth: '1200px' }}>
-                <h1 className="mb-4 fw-bold">Home Page Management</h1>
+                <h1 className="mb-4 fw-bold" style={{
+                    paddingLeft: '20px'
+                }}><i className="fa fa-home me-2 text-primary"></i> Home Page Management</h1>
 
                 {/* Bootstrap Tabs Navigation */}
                 <ul className="nav nav-tabs mb-4" role="tablist">

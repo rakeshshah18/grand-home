@@ -159,11 +159,15 @@ const OurProject = () => {
 
             <div className="card shadow-sm border-0 mb-4" style={{ borderRadius: '15px' }}>
                 <div className="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
-                    <h5 className="mb-0 fw-bold text-dark">
+                    <h5 className="mb-0 fw-bold text-dark"
+                        style={{
+                            paddingLeft: '35px'
+                        }}
+                    >
                         <i className="fa fa-th-large text-primary me-2"></i> Our Projects Management
                     </h5>
                     <button className="btn btn-primary px-4 shadow-sm" style={{ borderRadius: '10px' }} onClick={() => setShowModal(true)}>
-                        <i className="fa fa-plus-circle me-2"></i> Add New Section
+                        <i className="fa fa-plus-circle me-2"></i> New Section
                     </button>
                 </div>
                 <div className="card-body p-0">

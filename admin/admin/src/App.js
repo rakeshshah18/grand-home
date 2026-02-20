@@ -7,6 +7,7 @@ import { useState } from 'react';
 import About from './components/pages/about/about';
 import OurProject from './components/pages/home/ourProject';
 import Blogs from './components/pages/blogs/blogs';
+import GetInTouch from './components/pages/contacts/getInTouch';
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth >= 992);
@@ -26,6 +27,7 @@ function App() {
             <Route path="/about-us" element={<About />} />
             <Route path="/projects" element={<OurProject />} />
             <Route path="/blogs" element={<Blogs />} />
+            <Route path="/contact-us" element={<GetInTouch />} />
           </Routes>
         </div>
       </div>

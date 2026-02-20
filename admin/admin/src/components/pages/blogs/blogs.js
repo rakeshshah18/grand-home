@@ -161,9 +161,13 @@ const Blogs = () => {
     return (
         <div className="container-fluid py-4">
             <div className="d-flex justify-content-between align-items-center mb-4">
-                <h4 className="fw-bold m-0"><i className="fa fa-newspaper-o me-2 text-primary"></i>Blogs Management</h4>
-                <button className="btn btn-primary px-4 shadow-sm" style={{ borderRadius: '8px' }} onClick={() => setShowModal(true)}>
-                    <i className="fa fa-plus-circle me-2"></i> Create New Blog
+                <h6 className="fw-bold m-0"
+                    style={{
+                        paddingLeft: '55px'
+                    }}
+                ><i className="fa fa-newspaper-o text-primary"></i> Manage Blogs</h6>
+                <button className="btn btn-primary px-2 shadow-sm" style={{ borderRadius: '8px' }} onClick={() => setShowModal(true)}>
+                    <i className="fa fa-plus-circle me-2"></i> New Blog
                 </button>
             </div>
 

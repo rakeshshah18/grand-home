@@ -8,6 +8,7 @@ import aboutRoute from "./pages/homePage/aboutRoute.js";
 import aboutPageRoutes from "./pages/aboutPage/about.js";
 import pointsCallRoutes from "./pages/aboutPage/pointsCall.js";
 import blogRoutes from "./pages/blogs/blogRoutes.js";
+import getInTouchRoutes from "./pages/contact/getInTouchRoutes.js";
 
 console.log('[DEBUG] src/routes/index.js loaded');
 
@@ -39,6 +40,9 @@ router.use("/pointsCall", pointsCallRoutes);
 
 // Blog routes
 router.use("/blogs", blogRoutes);
+
+// Contact routes
+router.use("/getInTouch", getInTouchRoutes);
 
 
 export default router;

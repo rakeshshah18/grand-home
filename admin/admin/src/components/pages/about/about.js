@@ -143,7 +143,10 @@ const About = () => {
             {/* Dashboard View */}
             <div className="card shadow-sm border-0 bg-white" style={{ borderRadius: '12px' }}>
                 <div className="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
-                    <h5 className="mb-0 fw-bold text-dark p-3">
+                    <h5 className="mb-0 fw-bold text-dark"
+                        style={{
+                            paddingLeft: '35px'
+                        }}>
                         <i className="fa fa-info-circle text-primary me-2"></i> About Page Sections
                     </h5>
                     <button className="btn btn-primary px-4 shadow-sm" onClick={() => handleOpenModal()}>
