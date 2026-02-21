@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 const SidebarSetting = () => {
     const [navTabs, setNavTabs] = useState([]);
@@ -131,24 +132,37 @@ const SidebarSetting = () => {
     };
 
     // Recursive component for rendering levels
-    const NavNode = ({ node, level = 0, rootId = null }) => {
+    const NavNode = ({ node, level = 0, rootId = null, parentPath = '' }) => {
         const [isExpanded, setIsExpanded] = useState(false);
         const hasChildren = node.children && node.children.length > 0;
         const currentRootId = rootId || node._id;
+
+        // Fix: Use the last part of the URL as a slug for nested items to prevent duplication
+        let slug = node.url || node.name.toLowerCase().replace(/\s+/g, '-');
+        if (level > 0 && slug.includes('/') && !slug.startsWith('http')) {
+            const parts = slug.split('/').filter(x => x);
+            slug = parts[parts.length - 1] || slug;
+        }
+
+        const fullPath = (level === 0
+            ? (slug.startsWith('/') ? slug : `/${slug}`)
+            : `${parentPath}/${slug.replace(/^\//, '')}`
+        ).replace(/\/+/g, '/');
 
         return (
             <div className={`node-item mb-2 ${level > 0 ? 'ml-4 pl-3 border-left' : ''}`} style={{ transition: 'all 0.3s' }}>
                 <div className="card border-0 shadow-sm overflow-hidden" style={{ borderRadius: '12px', border: level === 0 ? '1px solid #e2e8f0' : 'none', background: level % 2 === 0 ? '#fff' : '#f8fafc' }}>
                     <div className="card-body p-3 d-flex align-items-center justify-content-between">
-                        <div className="d-flex align-items-center flex-grow-1">
+                        <div
+                            className="d-flex align-items-center flex-grow-1"
+                            style={{ cursor: (hasChildren || level < 4) ? 'pointer' : 'default' }}
+                            onClick={() => (hasChildren || level < 4) && setIsExpanded(!isExpanded)}
+                        >
                             <div className="mr-3 text-muted font-weight-bold" style={{ width: '20px' }}>{node.order}</div>
                             {hasChildren || level < 4 ? (
-                                <button
-                                    className="btn btn-link btn-sm p-0 mr-2 text-dark"
-                                    onClick={() => setIsExpanded(!isExpanded)}
-                                >
+                                <div className="mr-2 text-dark">
                                     <i className={`fa ${isExpanded ? 'fa-chevron-down' : 'fa-chevron-right'}`} style={{ width: '15px' }}></i>
-                                </button>
+                                </div>
                             ) : <div className="mr-2" style={{ width: '15px' }}></div>}
 
                             <div className="d-flex flex-column">
@@ -156,11 +170,23 @@ const SidebarSetting = () => {
                                     {node.name}
                                     {!node.isActive && <span className="badge badge-secondary ml-2 small" style={{ fontSize: '0.6rem' }}>HIDDEN</span>}
                                 </span>
-                                <code className="small text-muted" style={{ fontSize: '0.75rem' }}>{node.url || '/'}</code>
+                                <code className="small text-primary" style={{ fontSize: '0.7rem', opacity: 0.8 }}>{fullPath}</code>
                             </div>
                         </div>
 
                         <div className="actions d-flex align-items-center">
+                            {/* Page Content Builder Link - Only for nested leaf nodes (part of a hierarchy) */}
+                            {(!hasChildren && level > 0) && (
+                                <Link
+                                    to={`/page-builder?path=${encodeURIComponent(fullPath)}&name=${encodeURIComponent(node.name)}&id=${currentRootId}`}
+                                    className="btn btn-sm btn-outline-info mr-2"
+                                    style={{ borderRadius: '8px' }}
+                                    title="Design Page Content"
+                                >
+                                    <i className="fa fa-paint-brush"></i> <span className="d-none d-md-inline ml-1">Design</span>
+                                </Link>
+                            )}
+
                             {/* Add Child - limit to 5 levels (0 to 4) */}
                             {level < 4 && (
                                 <button className="btn btn-sm btn-outline-primary mr-2" style={{ borderRadius: '8px' }} onClick={() => handleOpenModal(null, node._id, currentRootId)}>
@@ -181,7 +207,7 @@ const SidebarSetting = () => {
                     <div className="node-children mt-2 pb-1" style={{ animation: 'fadeIn 0.2s ease-out' }}>
                         {hasChildren ? (
                             node.children.sort((a, b) => a.order - b.order).map(child => (
-                                <NavNode key={child._id} node={child} level={level + 1} rootId={currentRootId} />
+                                <NavNode key={child._id} node={child} level={level + 1} rootId={currentRootId} parentPath={fullPath} />
                             ))
                         ) : (
                             <div className="text-center py-2 text-muted small ml-4">No sub-items yet.</div>

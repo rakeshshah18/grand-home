@@ -9,6 +9,8 @@ import OurProject from './components/pages/home/ourProject';
 import Blogs from './components/pages/blogs/blogs';
 import GetInTouch from './components/pages/contacts/getInTouch';
 import SidebarSetting from './components/sidebar/SidebarSetting';
+import PageBuilder from './components/pages/dynamicPage/PageBuilder';
+import DynamicPageView from './components/pages/dynamicPage/DynamicPageView';
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth >= 992);
@@ -30,6 +32,8 @@ function App() {
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/contact-us" element={<GetInTouch />} />
             <Route path="/sidebar-setting" element={<SidebarSetting />} />
+            <Route path="/page-builder" element={<PageBuilder />} />
+            <Route path="/*" element={<DynamicPageView />} />
           </Routes>
         </div>
       </div>
