@@ -3,6 +3,7 @@ import Featured from './Featured';
 import OurValues from './ourValues';
 import OurProject from './ourProject';
 import About from './about';
+import Footer from './footer';
 
 const Home = () => {
     const [activeTab, setActiveTab] = useState('hero');
@@ -234,6 +235,15 @@ const Home = () => {
                             <i className="fa fa-briefcase me-2"></i> Our Projects
                         </button>
                     </li>
+                    <li className="nav-item" role="presentation">
+                        <button
+                            className={`nav-link ${activeTab === 'footer' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('footer')}
+                            type="button"
+                        >
+                            <i className="fa fa-cogs me-2"></i> Footer
+                        </button>
+                    </li>
                 </ul>
 
                 {/* Tab Content */}
@@ -323,6 +333,11 @@ const Home = () => {
                     {/* Our Projects Tab */}
                     {activeTab === 'projects' && (
                         <OurProject />
+                    )}
+
+                    {/* Footer Tab */}
+                    {activeTab === 'footer' && (
+                        <Footer />
                     )}
                 </div>
             </div>
