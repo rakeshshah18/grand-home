@@ -97,51 +97,90 @@ const getTabItemById = async (req, res) => {
 };
 
 // Add a child item to a parent tab
+// Helper function to find a node by ID recursively in the tree
+const findNodeById = (nodes, id) => {
+    for (const node of nodes) {
+        if (node._id.toString() === id) return node;
+        if (node.children && node.children.length > 0) {
+            const result = findNodeById(node.children, id);
+            if (result) return result;
+        }
+    }
+    return null;
+};
+
+// Helper function to delete a node by ID recursively
+const deleteNodeById = (nodes, id) => {
+    for (let i = 0; i < nodes.length; i++) {
+        if (nodes[i]._id.toString() === id) {
+            nodes.splice(i, 1);
+            return true;
+        }
+        if (nodes[i].children && nodes[i].children.length > 0) {
+            if (deleteNodeById(nodes[i].children, id)) return true;
+        }
+    }
+    return false;
+};
+
+// Add a child item to any parent node (supports infinite/5-level nesting)
 const addChildToTab = async (req, res) => {
-    console.log('[DEBUG] addChildToTab called');
+    console.log('[DEBUG] addChildToTab called with parentId:', req.params.parentId);
     try {
         const { parentId } = req.params;
         const { name, url, order, children } = req.body;
 
         if (!name) {
-            return res.status(400).json({
-                success: false,
-                message: "Child item name is required"
-            });
+            return res.status(400).json({ success: false, message: "Name is required" });
         }
 
-        const parent = await NavTabPage.findById(parentId);
-        if (!parent) {
+        // 1. Search all root documents to find where this parentId exists
+        const allRoots = await NavTabPage.find();
+        let targetParent = null;
+        let rootDoc = null;
+
+        for (const root of allRoots) {
+            if (root._id.toString() === parentId) {
+                targetParent = root;
+                rootDoc = root;
+                break;
+            }
+            const foundNode = findNodeById(root.children, parentId);
+            if (foundNode) {
+                targetParent = foundNode;
+                rootDoc = root;
+                break;
+            }
+        }
+
+        if (!targetParent || !rootDoc) {
+            console.log('[ERROR] Parent node not found for ID:', parentId);
             return res.status(404).json({
                 success: false,
-                message: "Parent tab not found"
+                message: "Parent tab not found in the hierarchy"
             });
         }
 
         const newChild = {
             name,
             url: url || null,
-            order: order || parent.children.length,
+            order: order || (targetParent.children ? targetParent.children.length : 0),
             isActive: true,
             children: children || []
         };
 
-        parent.children.push(newChild);
-        await parent.save();
+        if (!targetParent.children) targetParent.children = [];
+        targetParent.children.push(newChild);
+
+        await rootDoc.save();
 
         res.status(201).json({
             success: true,
-            message: "Child item added successfully",
-            data: parent
+            message: "Node added successfully",
+            data: rootDoc // Return the root doc to sync the whole tree
         });
     } catch (error) {
-        if (error.name === "ValidationError") {
-            return res.status(400).json({
-                success: false,
-                message: error.message
-            });
-        }
-
+        console.error('[ERROR] addChildToTab:', error);
         res.status(500).json({
             success: false,
             message: "Error adding child item",
@@ -150,290 +189,112 @@ const addChildToTab = async (req, res) => {
     }
 };
 
-// Add a nested child to a specific child (supports deep nesting)
-const addNestedChild = async (req, res) => {
-    console.log('[DEBUG] addNestedChild called');
-    try {
-        const { parentId, childId } = req.params;
-        const { name, url, order, children } = req.body;
-
-        if (!name) {
-            return res.status(400).json({
-                success: false,
-                message: "Item name is required"
-            });
-        }
-
-        const parent = await NavTabPage.findById(parentId);
-        if (!parent) {
-            return res.status(404).json({
-                success: false,
-                message: "Parent tab not found"
-            });
-        }
-
-        // Find the child using Mongoose subdocument id method
-        const targetChild = parent.children.id(childId);
-        if (!targetChild) {
-            return res.status(404).json({
-                success: false,
-                message: "Child item not found"
-            });
-        }
-
-        const newNestedChild = {
-            name,
-            url: url || null,
-            order: order || targetChild.children.length,
-            isActive: true,
-            children: children || []
-        };
-
-        targetChild.children.push(newNestedChild);
-        await parent.save();
-
-        res.status(201).json({
-            success: true,
-            message: "Nested child added successfully",
-            data: parent
-        });
-    } catch (error) {
-        if (error.name === "ValidationError") {
-            return res.status(400).json({
-                success: false,
-                message: error.message
-            });
-        }
-
-        res.status(500).json({
-            success: false,
-            message: "Error adding nested child",
-            error: error.message
-        });
-    }
-};
-
-// Get all children of a specific tab
-const getChildrenOfTab = async (req, res) => {
-    console.log('[DEBUG] getChildrenOfTab called');
-    try {
-        const { parentId } = req.params;
-
-        const parent = await NavTabPage.findById(parentId);
-        if (!parent) {
-            return res.status(404).json({
-                success: false,
-                message: "Parent tab not found"
-            });
-        }
-
-        res.status(200).json({
-            success: true,
-            count: parent.children.length,
-            data: parent.children
-        });
-    } catch (error) {
-        if (error.kind === "ObjectId") {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid parent ID"
-            });
-        }
-
-        res.status(500).json({
-            success: false,
-            message: "Error fetching children",
-            error: error.message
-        });
-    }
-};
-
-// Update a navigation tab
-const updateTabItem = async (req, res) => {
-    console.log('[DEBUG] updateTabItem called with id:', req.params.id);
-    try {
-        const { id } = req.params;
-        const { name, url, order, isActive, pageRef } = req.body;
-
-        const updateData = {};
-        if (name !== undefined) updateData.name = name;
-        if (url !== undefined) updateData.url = url;
-        if (order !== undefined) updateData.order = order;
-        if (isActive !== undefined) updateData.isActive = isActive;
-        if (pageRef !== undefined) updateData.pageRef = pageRef;
-
-        const item = await NavTabPage.findByIdAndUpdate(
-            id,
-            updateData,
-            { new: true, runValidators: true }
-        );
-
-        if (!item) {
-            return res.status(404).json({
-                success: false,
-                message: "Navigation tab not found"
-            });
-        }
-
-        res.status(200).json({
-            success: true,
-            message: "Navigation tab updated successfully",
-            data: item
-        });
-    } catch (error) {
-        if (error.name === "ValidationError") {
-            return res.status(400).json({
-                success: false,
-                message: error.message
-            });
-        }
-
-        if (error.kind === "ObjectId") {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid tab ID"
-            });
-        }
-
-        res.status(500).json({
-            success: false,
-            message: "Error updating navigation tab",
-            error: error.message
-        });
-    }
-};
-
-// Update a child item
+// Update an item at any level
 const updateChildItem = async (req, res) => {
-    console.log('[DEBUG] updateChildItem called');
+    console.log('[DEBUG] updateChildItem called. Parent(Root)ID:', req.params.parentId, 'ChildID:', req.params.childId);
     try {
-        const { parentId, childId } = req.params;
+        const { parentId, childId } = req.params; // parentId here is the Root ID passed from frontend
         const { name, url, order, isActive } = req.body;
 
-        const parent = await NavTabPage.findById(parentId);
-        if (!parent) {
-            return res.status(404).json({
-                success: false,
-                message: "Parent tab not found"
-            });
+        const rootDoc = await NavTabPage.findById(parentId);
+        if (!rootDoc) {
+            return res.status(404).json({ success: false, message: "Root document not found" });
         }
 
-        const child = parent.children.id(childId);
-        if (!child) {
-            return res.status(404).json({
-                success: false,
-                message: "Child item not found"
-            });
+        let targetNode = null;
+        if (parentId === childId) {
+            targetNode = rootDoc;
+        } else {
+            targetNode = findNodeById(rootDoc.children, childId);
         }
 
-        if (name !== undefined) child.name = name;
-        if (url !== undefined) child.url = url;
-        if (order !== undefined) child.order = order;
-        if (isActive !== undefined) child.isActive = isActive;
+        if (!targetNode) {
+            return res.status(404).json({ success: false, message: "Item not found in tree" });
+        }
 
-        await parent.save();
+        if (name !== undefined) targetNode.name = name;
+        if (url !== undefined) targetNode.url = url;
+        if (order !== undefined) targetNode.order = order;
+        if (isActive !== undefined) targetNode.isActive = isActive;
+
+        await rootDoc.save();
 
         res.status(200).json({
             success: true,
-            message: "Child item updated successfully",
-            data: parent
+            message: "Item updated successfully",
+            data: rootDoc
         });
     } catch (error) {
-        if (error.name === "ValidationError") {
-            return res.status(400).json({
-                success: false,
-                message: error.message
-            });
-        }
-
         res.status(500).json({
             success: false,
-            message: "Error updating child item",
+            message: "Error updating item",
             error: error.message
         });
     }
 };
 
-// Delete a navigation tab
-const deleteTabItem = async (req, res) => {
-    console.log('[DEBUG] deleteTabItem called with id:', req.params.id);
-    try {
-        const { id } = req.params;
-
-        const item = await NavTabPage.findByIdAndDelete(id);
-
-        if (!item) {
-            return res.status(404).json({
-                success: false,
-                message: "Navigation tab not found"
-            });
-        }
-
-        res.status(200).json({
-            success: true,
-            message: "Navigation tab deleted successfully",
-            data: item
-        });
-    } catch (error) {
-        if (error.kind === "ObjectId") {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid tab ID"
-            });
-        }
-
-        res.status(500).json({
-            success: false,
-            message: "Error deleting navigation tab",
-            error: error.message
-        });
-    }
-};
-
-// Delete a child item from a parent tab
+// Delete an item at any level
 const deleteChildItem = async (req, res) => {
-    console.log('[DEBUG] deleteChildItem called');
+    console.log('[DEBUG] deleteChildItem called. RootID:', req.params.parentId, 'ChildID:', req.params.childId);
     try {
-        const { parentId, childId } = req.params;
+        const { parentId, childId } = req.params; // parentId is the root document ID
 
-        const parent = await NavTabPage.findById(parentId);
-        if (!parent) {
-            return res.status(404).json({
-                success: false,
-                message: "Parent tab not found"
-            });
+        const rootDoc = await NavTabPage.findById(parentId);
+        if (!rootDoc) {
+            return res.status(404).json({ success: false, message: "Root document not found" });
         }
 
-        const child = parent.children.id(childId);
-        if (!child) {
-            return res.status(404).json({
-                success: false,
-                message: "Child item not found"
-            });
+        // If childId is the root itself, use standard delete
+        if (parentId === childId) {
+            await NavTabPage.findByIdAndDelete(parentId);
+            return res.status(200).json({ success: true, message: "Root tab deleted" });
         }
 
-        child.remove();
-        await parent.save();
+        const deleted = deleteNodeById(rootDoc.children, childId);
+        if (!deleted) {
+            return res.status(404).json({ success: false, message: "Item not found in hierarchy" });
+        }
+
+        await rootDoc.save();
 
         res.status(200).json({
             success: true,
-            message: "Child item deleted successfully",
-            data: parent
+            message: "Node deleted successfully",
+            data: rootDoc
         });
     } catch (error) {
-        if (error.kind === "ObjectId") {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid ID"
-            });
-        }
-
         res.status(500).json({
             success: false,
-            message: "Error deleting child item",
+            message: "Error deleting item",
             error: error.message
         });
     }
+};
+
+// --- Standard wrappers/stubs to keep existing routes happy ---
+const getChildrenOfTab = async (req, res) => {
+    try {
+        const root = await NavTabPage.findById(req.params.parentId);
+        res.status(200).json({ success: true, data: root ? root.children : [] });
+    } catch (e) { res.status(500).json({ success: false, message: e.message }); }
+};
+
+const updateTabItem = async (req, res) => {
+    req.params.parentId = req.params.id;
+    req.params.childId = req.params.id;
+    return updateChildItem(req, res);
+};
+
+const deleteTabItem = async (req, res) => {
+    req.params.parentId = req.params.id;
+    req.params.childId = req.params.id;
+    return deleteChildItem(req, res);
+};
+
+const addNestedChild = async (req, res) => {
+    // Current logic uses addChildToTab which is already recursive
+    req.params.parentId = req.params.childId;
+    return addChildToTab(req, res);
 };
 
 export default {

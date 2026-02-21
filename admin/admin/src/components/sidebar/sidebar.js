@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import './style.css';
 import './responsive.css';
 
@@ -17,20 +18,20 @@ const NavItem = ({ item, level = 0, isFirst = false }) => {
     return (
         <>
             <li className={isFirst ? 'active' : ''}>
-                <a
-                    href={item.url || '#'}
+                <Link
+                    to={item.url || '#'}
                     onClick={handleToggle}
-                    style={{ paddingLeft: `${level * 20 + 15}px` }}
-                    className={hasChildren ? 'has-children' : ''}
+                    style={{ paddingLeft: `${level * 20 + 15}px`, textDecoration: 'none' }}
+                    className={hasChildren ? 'has-children d-flex align-items-center' : 'd-flex align-items-center'}
                 >
                     <span className="mr-1"></span>
                     {item.name}
                     {hasChildren && (
-                        <span className={`dropdown-toggle-icon ${isExpanded ? 'expanded' : ''}`}>
+                        <span className={`dropdown-toggle-icon ml-auto ${isExpanded ? 'expanded' : ''}`}>
                             <i className={`fa fa-chevron-${isExpanded ? 'down' : 'right'}`}></i>
                         </span>
                     )}
-                </a>
+                </Link>
             </li>
             {hasChildren && isExpanded && (
                 <ul className="list-unstyled sub-menu">
@@ -117,38 +118,53 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
             {/* Sidebar */}
             <nav id="sidebar" className={isOpen ? 'sidebar-open' : 'sidebar-closed'}>
-                <div className="p-4">
-                    <h1>
-                        <a href="/" className="logo">
-                            Dashboard <span>Admin</span>
-                        </a>
-                    </h1>
-                    <ul className="list-unstyled components mb-5 text-white">
-                        {loading ? (
-                            <li>Loading...</li>
-                        ) : error ? (
-                            <li>Error: {error}</li>
-                        ) : (
-                            navTabs.map((tab, index) => (
-                                <NavItem
-                                    key={tab._id || index}
-                                    item={tab}
-                                    level={0}
-                                    isFirst={index === 0}
-                                />
-                            ))
-                        )}
-                    </ul>
+                <div className="p-4 h-100 d-flex flex-column">
+                    <div className="flex-grow-1">
+                        <h1>
+                            <a href="/" className="logo">
+                                Dashboard <span>Admin</span>
+                            </a>
+                        </h1>
+                        <ul className="list-unstyled components mb-5 text-white">
+                            {loading ? (
+                                <li>Loading...</li>
+                            ) : error ? (
+                                <li>Error: {error}</li>
+                            ) : (
+                                navTabs.map((tab, index) => (
+                                    <NavItem
+                                        key={tab._id || index}
+                                        item={tab}
+                                        level={0}
+                                        isFirst={index === 0}
+                                    />
+                                ))
+                            )}
+                        </ul>
+                    </div>
+
+                    {/* <div className="sidebar-settings mt-auto pt-3 border-top border-secondary">
+                        <ul className="list-unstyled components">
+                            <li>
+                                <Link to="/sidebar-setting" className="d-flex align-items-center text-white text-decoration-none py-2 px-3" style={{ borderRadius: '8px', transition: 'all 0.3s' }}>
+                                    <i className="fa fa-cog mr-3" style={{ fontSize: '1.2rem' }}></i>
+                                    <span>Sidebar Settings</span>
+                                </Link>
+                            </li>
+                        </ul>
+                    </div> */}
 
 
-                    <div className="footer" style={{ position: "absolute", bottom: "12px", left: "0", right: "0", textAlign: "center" }}>
-                        <p>
-                            Copyright &copy;
-                            <script>
-                                document.write(new Date().getFullYear());
-                            </script>
-                            All rights reserved
+                    <div className="footer mt-3 mb-2 text-center" style={{ fontSize: '0.8rem', opacity: '0.7' }}>
+                        <p className="mb-0">
+                            Copyright &copy; {new Date().getFullYear()} All rights reserved by Grand Home
                         </p>
+                        <Link to="/sidebar-setting" className="d-flex align-items-center text-white text-decoration-none py-2 px-3" style={{ borderRadius: '8px', transition: 'all 0.3s' }}>
+                            <span>
+                                <i className="fa fa-cog mr-3" style={{ fontSize: '1.2rem' }}></i>
+                            </span>
+                        </Link>
+
                     </div>
                 </div>
             </nav>
