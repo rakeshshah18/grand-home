@@ -167,10 +167,9 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                                 </span>
                             </Link>
                             <div className="d-flex align-items-center text-white text-decoration-none py-2 px-3" style={{ borderRadius: '8px', transition: 'all 0.3s' }}>
-                                <span>
-                                    <i className="fa fa-user mr-3" style={{ fontSize: '1.2rem' }}></i>
-                                </span>
-                                User
+                                <a className="navbar-brand ms-auto" href="#">
+                                    <i className="fa fa-user text-white"> User</i>
+                                </a>
                             </div>
                         </div>
                     </div>
