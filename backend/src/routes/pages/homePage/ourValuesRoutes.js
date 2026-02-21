@@ -1,5 +1,6 @@
 import express from 'express';
 import * as ourValuesController from '../../../controllers/pages/homePage/ourValuesControllers.js';
+import { protect } from '../../../middleware/authMiddleware.js';
 
 const router = express.Router();
 
@@ -8,19 +9,19 @@ const router = express.Router();
 */
 
 /* ---------------- CREATE ---------------- */
-router.post('/', ourValuesController.createOurValues);
+router.post('/', protect, ourValuesController.createOurValues);
 
 /* ---------------- READ ---------------- */
 router.get('/', ourValuesController.getOurValues);
 
 /* ---------------- UPDATE ---------------- */
 /* Full replace */
-router.put('/:id', ourValuesController.updateOurValues);
+router.put('/:id', protect, ourValuesController.updateOurValues);
 
 /* Partial update (recommended for editing single card/field) */
-router.patch('/:id', ourValuesController.updateOurValues);
+router.patch('/:id', protect, ourValuesController.updateOurValues);
 
 /* ---------------- DELETE ---------------- */
-router.delete('/:id', ourValuesController.deleteOurValues);
+router.delete('/:id', protect, ourValuesController.deleteOurValues);
 
 export default router;

@@ -1,6 +1,10 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const Dashboard = () => {
+    const { user } = useAuth();
+
     return (
         <div>
             <nav className="navbar bg-body-tertiary">
@@ -12,9 +16,10 @@ const Dashboard = () => {
                     <span className="navbar-brand mx-auto mb-0 h1">
                         Dashboard
                     </span>
-                    <a className="navbar-brand ms-auto" href="#">
-                        <i className="fa fa-user text-dark"> User</i>
-                    </a>
+                    <Link className="navbar-brand ms-auto d-flex align-items-center" to="/profile">
+                        <i className="fa fa-user-circle mr-2"></i>
+                        <span>{user?.username || 'User'}</span>
+                    </Link>
                 </div>
             </nav>
         </div>

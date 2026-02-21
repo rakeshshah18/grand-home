@@ -12,6 +12,7 @@ import getInTouchRoutes from "./pages/contact/getInTouchRoutes.js";
 import scheduleVisitRoutes from "./pages/contact/scheduleVisitRoutes.js";
 import footerRoutes from "./pages/homePage/footerRoutes.js";
 import dynamicPageRoutes from "./pages/dynamicPageRoutes.js";
+import authRoutes from "./auth/authRoutes.js";
 
 console.log('[DEBUG] src/routes/index.js loaded');
 
@@ -54,5 +55,7 @@ router.use("/footer", footerRoutes);
 // Dynamic Page Content routes
 router.use("/dynamic-content", dynamicPageRoutes);
 
+// Auth routes
+router.use("/auth", authRoutes);
 
 export default router;

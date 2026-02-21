@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getHeaders, baseUrl } from '../../../utils/api';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 
@@ -35,7 +36,6 @@ const Blogs = () => {
         slug: ''
     });
 
-    const baseUrl = process.env.REACT_APP_BASE_URL || 'http://localhost:8000';
 
     useEffect(() => {
         fetchBlogs();
@@ -80,7 +80,7 @@ const Blogs = () => {
 
             const res = await fetch(url, {
                 method,
-                headers: { 'Content-Type': 'application/json' },
+                headers: getHeaders(),
                 body: JSON.stringify(formData)
             });
 
@@ -122,7 +122,10 @@ const Blogs = () => {
     const handleDelete = async (id) => {
         if (!window.confirm('Delete this blog?')) return;
         try {
-            const res = await fetch(`${baseUrl}/api/blogs/${id}`, { method: 'DELETE' });
+            const res = await fetch(`${baseUrl}/api/blogs/${id}`, {
+                method: 'DELETE',
+                headers: getHeaders()
+            });
             if (res.ok) {
                 setMessage({ type: 'success', text: 'Blog deleted!' });
                 fetchBlogs();

@@ -20,6 +20,14 @@ const PageBuilder = () => {
 
     const baseUrl = process.env.REACT_APP_BASE_URL || 'http://localhost:8000';
 
+    const getHeaders = () => {
+        const token = localStorage.getItem('token');
+        return {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        };
+    };
+
     const fetchPageContent = useCallback(async () => {
         if (!pagePath) return;
         try {
@@ -141,7 +149,7 @@ const PageBuilder = () => {
 
             const response = await fetch(`${baseUrl}/api/dynamic-content/save`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: getHeaders(),
                 body: JSON.stringify({
                     title,
                     path: pagePath,

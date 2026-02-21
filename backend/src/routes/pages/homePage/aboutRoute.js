@@ -7,13 +7,14 @@ import {
     updateAbout,
     deleteAbout
 } from '../../../controllers/pages/homePage/aboutController.js';
+import { protect } from '../../../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.post('/', createAbout);
+router.post('/', protect, createAbout);
 router.get('/', getAllAbout);
 router.get('/:id', getAboutById);
-router.put('/:id', updateAbout);
-router.delete('/:id', deleteAbout);
+router.put('/:id', protect, updateAbout);
+router.delete('/:id', protect, deleteAbout);
 
 export default router;

@@ -6,13 +6,14 @@ import {
   updatePointsCall,
   deletePointsCall,
 } from "../../../controllers/pages/aboutPage/pointCall.js";
+import { protect } from "../../../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", createPointsCall);
+router.post("/", protect, createPointsCall);
 router.get("/", getAllPointsCall);
 router.get("/:id", getPointsCallById);
-router.put("/:id", updatePointsCall);
-router.delete("/:id", deletePointsCall);
+router.put("/:id", protect, updatePointsCall);
+router.delete("/:id", protect, deletePointsCall);
 
 export default router;

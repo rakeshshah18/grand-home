@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { getHeaders, baseUrl } from '../../../utils/api';
 
 const initialForm = {
     heading: "",
@@ -16,15 +17,6 @@ export default function AboutAdmin() {
     const [loading, setLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
 
-    const getBaseUrl = () => {
-        const envUrl = process.env.REACT_APP_BASE_URL;
-        if (envUrl && envUrl.trim() !== "") {
-            return envUrl.trim();
-        }
-        return 'http://localhost:8000';
-    };
-
-    const baseUrl = getBaseUrl();
     const API = `${baseUrl}/api/about`;
 
     // Fetch all
@@ -70,7 +62,7 @@ export default function AboutAdmin() {
 
             const res = await fetch(url, {
                 method,
-                headers: { "Content-Type": "application/json" },
+                headers: getHeaders(),
                 body: JSON.stringify(form)
             });
 
@@ -116,7 +108,10 @@ export default function AboutAdmin() {
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this?")) {
             try {
-                const res = await fetch(`${API}/${id}`, { method: "DELETE" });
+                const res = await fetch(`${API}/${id}`, {
+                    method: "DELETE",
+                    headers: getHeaders()
+                });
                 if (res.ok) {
                     fetchAbout();
                     alert("Deleted successfully");

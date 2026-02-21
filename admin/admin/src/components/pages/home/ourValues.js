@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getHeaders, baseUrl } from '../../../utils/api';
 
 const OurValues = () => {
     const createEmptyCard = () => ({
@@ -17,7 +18,6 @@ const OurValues = () => {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
 
-    const baseUrl = process.env.REACT_APP_BASE_URL || 'http://localhost:8000';
 
     useEffect(() => {
         fetchOurValues();
@@ -74,7 +74,7 @@ const OurValues = () => {
 
             const response = await fetch(url, {
                 method,
-                headers: { 'Content-Type': 'application/json' },
+                headers: getHeaders(),
                 body: JSON.stringify(formData)
             });
 
@@ -110,7 +110,10 @@ const OurValues = () => {
         if (!window.confirm('Are you sure you want to delete this section?')) return;
         setLoading(true);
         try {
-            const res = await fetch(`${baseUrl}/api/ourValues/${id}`, { method: 'DELETE' });
+            const res = await fetch(`${baseUrl}/api/ourValues/${id}`, {
+                method: 'DELETE',
+                headers: getHeaders()
+            });
             const result = await res.json();
             if (result.success) {
                 setMessage({ type: 'success', text: 'Section deleted successfully!' });

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { getHeaders, baseUrl } from '../../../utils/api';
 
 const ScheduledVisit = () => {
     const [visits, setVisits] = useState([]);
@@ -7,7 +8,6 @@ const ScheduledVisit = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 4;
 
-    const baseUrl = process.env.REACT_APP_BASE_URL || 'http://localhost:8000';
 
     useEffect(() => {
         fetchVisits();
@@ -37,6 +37,7 @@ const ScheduledVisit = () => {
         try {
             const res = await fetch(`${baseUrl}/api/scheduleVisit/${id}`, {
                 method: "DELETE",
+                headers: getHeaders()
             });
             const result = await res.json();
             if (result.success) {

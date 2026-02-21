@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { getHeaders, baseUrl } from '../../../utils/api';
 
 const Points = () => {
     const [pointsData, setPointsData] = useState([]);
@@ -13,7 +14,6 @@ const Points = () => {
     const [editId, setEditId] = useState(null);
     const [message, setMessage] = useState({ type: "", text: "" });
 
-    const baseUrl = process.env.REACT_APP_BASE_URL || 'http://localhost:8000';
     const API = `${baseUrl}/api/pointsCall`;
 
     useEffect(() => {
@@ -94,7 +94,7 @@ const Points = () => {
 
             const response = await fetch(url, {
                 method,
-                headers: { 'Content-Type': 'application/json' },
+                headers: getHeaders(),
                 body: JSON.stringify(payload)
             });
 
@@ -117,7 +117,10 @@ const Points = () => {
     const handleDelete = async (id) => {
         if (!window.confirm("Delete this section?")) return;
         try {
-            const response = await fetch(`${API}/${id}`, { method: 'DELETE' });
+            const response = await fetch(`${API}/${id}`, {
+                method: 'DELETE',
+                headers: getHeaders()
+            });
             if (response.ok) {
                 fetchData();
             }

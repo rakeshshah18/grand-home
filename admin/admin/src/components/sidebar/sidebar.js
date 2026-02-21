@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import './style.css';
 import './responsive.css';
 
@@ -66,6 +67,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     const [navTabs, setNavTabs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { user, logout } = useAuth();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchNavTabs = async () => {
@@ -100,6 +103,11 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         fetchNavTabs();
     }, []);
 
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
+    };
+
     return (
         <>
             {/* Hamburger button for mobile */}
@@ -132,13 +140,15 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             {/* Sidebar */}
             <nav id="sidebar" className={isOpen ? 'sidebar-open' : 'sidebar-closed'}>
                 <div className="p-4 h-100 d-flex flex-column">
-                    <div className="flex-grow-1">
-                        <h1>
-                            <a href="/" className="logo">
-                                Dashboard <span>Admin</span>
-                            </a>
-                        </h1>
-                        <ul className="list-unstyled components mb-5 text-white">
+                    <div className="flex-grow-1 text-white">
+                        <div className="mb-4">
+                            <h1>
+                                <Link to="/" className="logo">
+                                    Dashboard <span>Admin</span>
+                                </Link>
+                            </h1>
+                        </div>
+                        <ul className="list-unstyled components mb-5">
                             {loading ? (
                                 <li>Loading...</li>
                             ) : error ? (
@@ -156,22 +166,29 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                         </ul>
                     </div>
 
-                    <div className="footer mt-3 mb-2 text-center" style={{ fontSize: '0.8rem', opacity: '0.7' }}>
-                        <p className="mb-0">
-                            Copyright &copy; {new Date().getFullYear()} All rights reserved by Grand Home
-                        </p>
-                        <div className="d-flex align-items-center justify-content-between">
-                            <Link to="/sidebar-setting" className="d-flex align-items-center text-white text-decoration-none py-2 px-3" style={{ borderRadius: '8px', transition: 'all 0.3s' }}>
-                                <span>
-                                    <i className="fa fa-cog mr-3" style={{ fontSize: '1.2rem' }}></i>
-                                </span>
+                    <div className="footer mt-auto pt-3 border-top" style={{ fontSize: '0.8rem', opacity: '0.8' }}>
+                        <div className="d-flex align-items-center justify-content-between mb-3 px-2">
+                            <Link to="/sidebar-setting" className="text-white" title="Settings">
+                                <i className="fa fa-cog" style={{ fontSize: '1.2rem' }}></i>
                             </Link>
-                            <div className="d-flex align-items-center text-white text-decoration-none py-2 px-3" style={{ borderRadius: '8px', transition: 'all 0.3s' }}>
-                                <a className="navbar-brand ms-auto" href="#">
-                                    <i className="fa fa-user text-white"> User</i>
-                                </a>
-                            </div>
+
+                            {/* <div className="d-flex align-items-center text-white">
+                                <i className="fa fa-user-circle mr-2" style={{ fontSize: '1.2rem' }}></i>
+                                <span className="text-truncate" style={{ maxWidth: '80px' }}>{user?.username || 'User'}</span>
+                            </div> */}
+
+                            <button
+                                onClick={handleLogout}
+                                className="btn btn-link p-0 text-danger"
+                                title="Logout"
+                                style={{ textDecoration: 'none' }}
+                            >
+                                <i className="fa fa-sign-out" style={{ fontSize: '1.2rem' }}></i>
+                            </button>
                         </div>
+                        <p className="mb-0 text-muted">
+                            &copy; {new Date().getFullYear()} Grand Home
+                        </p>
                     </div>
                 </div>
             </nav>

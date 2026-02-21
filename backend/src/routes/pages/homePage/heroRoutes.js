@@ -1,10 +1,11 @@
 import express from "express";
 import heroController from "../../../controllers/pages/homePage/heroController.js";
+import { protect } from "../../../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 // Create a new hero
-router.post("/", heroController.createHero);
+router.post("/", protect, heroController.createHero);
 
 // Get all heroes
 router.get("/", heroController.getAllHeroes);
@@ -13,9 +14,9 @@ router.get("/", heroController.getAllHeroes);
 router.get("/:id", heroController.getHeroById);
 
 // Update a hero
-router.put("/:id", heroController.updateHero);
+router.put("/:id", protect, heroController.updateHero);
 
 // Delete a hero
-router.delete("/:id", heroController.deleteHero);
+router.delete("/:id", protect, heroController.deleteHero);
 
 export default router;

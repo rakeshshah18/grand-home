@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getHeaders, baseUrl } from '../../../utils/api';
 import Featured from './Featured';
 import OurValues from './ourValues';
 import OurProject from './ourProject';
@@ -20,7 +21,6 @@ const Home = () => {
     const [message, setMessage] = useState({ type: '', text: '' });
     const [showModal, setShowModal] = useState(false);
 
-    const baseUrl = process.env.REACT_APP_BASE_URL || 'http://localhost:8000';
 
     useEffect(() => {
         if (activeTab === 'hero') {
@@ -75,9 +75,7 @@ const Home = () => {
 
             const response = await fetch(url, {
                 method: method,
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: getHeaders(),
                 body: JSON.stringify(formData)
             });
 
@@ -157,7 +155,8 @@ const Home = () => {
         setLoading(true);
         try {
             const response = await fetch(`${baseUrl}/api/hero/${id}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: getHeaders()
             });
 
             const result = await response.json();

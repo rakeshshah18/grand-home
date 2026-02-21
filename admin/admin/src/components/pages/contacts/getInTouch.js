@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getHeaders, baseUrl } from '../../../utils/api';
 import ScheduledVisit from './scheduledVisit';
 
 const GetInTouch = () => {
@@ -7,7 +8,6 @@ const GetInTouch = () => {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
 
-    const baseUrl = process.env.REACT_APP_BASE_URL || 'http://localhost:8000';
 
     useEffect(() => {
         fetchData();
@@ -50,7 +50,7 @@ const GetInTouch = () => {
         try {
             const res = await fetch(`${baseUrl}/api/getInTouch`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: getHeaders(),
                 body: JSON.stringify({ heading: currentHeading, sections: sectionsToSend })
             });
             const result = await res.json();
@@ -213,7 +213,7 @@ const GetInTouch = () => {
                                                         <div className="input-group input-group-sm">
                                                             <span className="input-group-text bg-white" style={{
                                                                 border: '1px solid rgba(0, 0, 0, 0.2)',
-                                                                }}>
+                                                            }}>
                                                                 <i className={section.icon || 'fa fa-circle'} style={{ minWidth: '16px', textAlign: 'center' }}></i>
                                                             </span>
                                                             <input
@@ -227,7 +227,7 @@ const GetInTouch = () => {
                                                         </div>
                                                     ) : (
                                                         <div className="d-flex align-items-center text-muted">
-                                                            <div className="bg-white rounded-circle d-flex align-items-center justify-content-center shadow-sm me-2" style={{ width: '24px', height: '24px', marginRight: '5px'}}>
+                                                            <div className="bg-white rounded-circle d-flex align-items-center justify-content-center shadow-sm me-2" style={{ width: '24px', height: '24px', marginRight: '5px' }}>
                                                                 <i className={`${section.icon || 'fa fa-circle'} text-primary small`}></i>
                                                             </div>
                                                             <span className="small font-monospace">{section.icon}</span>

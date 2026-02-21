@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getHeaders, baseUrl } from '../../../utils/api';
 
 const Footer = () => {
     const [columns, setColumns] = useState([]);
@@ -7,7 +8,6 @@ const Footer = () => {
     const [message, setMessage] = useState({ type: '', text: '' });
     const [isConfigMode, setIsConfigMode] = useState(false);
 
-    const baseUrl = process.env.REACT_APP_BASE_URL || 'http://localhost:8000';
 
     useEffect(() => {
         fetchFooter();
@@ -72,7 +72,7 @@ const Footer = () => {
         try {
             const res = await fetch(`${baseUrl}/api/footer`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: getHeaders(),
                 body: JSON.stringify({ columns: cleanColumns, isActive })
             });
             const result = await res.json();

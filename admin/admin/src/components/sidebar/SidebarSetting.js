@@ -15,6 +15,14 @@ const SidebarSetting = () => {
 
     const baseUrl = process.env.REACT_APP_BASE_URL || 'http://localhost:8000';
 
+    const getHeaders = () => {
+        const token = localStorage.getItem('token');
+        return {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        };
+    };
+
     useEffect(() => {
         fetchNavTabs();
     }, []);
@@ -66,14 +74,14 @@ const SidebarSetting = () => {
                     // Create Root Tab
                     response = await fetch(`${baseUrl}/api/navtab/`, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: getHeaders(),
                         body: JSON.stringify(modalData)
                     });
                 } else {
                     // Create Child (at any level)
                     response = await fetch(`${baseUrl}/api/navtab/${modalContext.parentId}/children`, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: getHeaders(),
                         body: JSON.stringify(modalData)
                     });
                 }
@@ -83,7 +91,7 @@ const SidebarSetting = () => {
                 const rootId = modalContext.rootId || editingNode._id;
                 response = await fetch(`${baseUrl}/api/navtab/${rootId}/children/${editingNode._id}`, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: getHeaders(),
                     body: JSON.stringify(modalData)
                 });
             }
@@ -110,12 +118,19 @@ const SidebarSetting = () => {
 
         try {
             let response;
+            const headers = getHeaders();
             if (!rootId) {
                 // Delete Root Tab
-                response = await fetch(`${baseUrl}/api/navtab/${nodeId}`, { method: 'DELETE' });
+                response = await fetch(`${baseUrl}/api/navtab/${nodeId}`, {
+                    method: 'DELETE',
+                    headers
+                });
             } else {
                 // Delete Child at any level
-                response = await fetch(`${baseUrl}/api/navtab/${rootId}/children/${nodeId}`, { method: 'DELETE' });
+                response = await fetch(`${baseUrl}/api/navtab/${rootId}/children/${nodeId}`, {
+                    method: 'DELETE',
+                    headers
+                });
             }
 
             const result = await response.json();

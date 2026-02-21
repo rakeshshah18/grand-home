@@ -1,17 +1,18 @@
 import express from 'express';
 import { createAbout, getAbout, updateAbout, upsertAbout, deleteAbout } from '../../../controllers/pages/aboutPage/aboutController.js';
+import { protect } from '../../../middleware/authMiddleware.js';
 
 const router = express.Router();
 
 router.route('/')
     .get(getAbout)
-    .post(createAbout)
-    .put(updateAbout)      
-    .delete(deleteAbout);   
+    .post(protect, createAbout)
+    .put(protect, updateAbout)
+    .delete(protect, deleteAbout);
 
-router.put('/upsert', upsertAbout);       
+router.put('/upsert', protect, upsertAbout);
 router.route('/:id')
-    .put(updateAbout)      
-    .delete(deleteAbout);
+    .put(protect, updateAbout)
+    .delete(protect, deleteAbout);
 
 export default router;
